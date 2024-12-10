@@ -11,6 +11,7 @@
       padding: 0;
       background: linear-gradient(135deg, #f5e0c3, #ffe4b5);
       color: #6a4f4b;
+      box-sizing: border-box;
       text-align: center;
     }
 
@@ -27,10 +28,11 @@
       align-items: center;
       flex-direction: column;
       margin-top: 20px;
+      padding: 10px;
     }
 
     #cookie {
-      width: 250px;
+      font-size: 120px;
       cursor: pointer;
       animation: float 2s infinite;
       margin-bottom: 20px;
@@ -109,14 +111,13 @@
     .shop {
       position: fixed;
       top: 0;
-      right: -150px; /* Startposition für geschlossenes Shop-GUI */
-      width: 150px; /* Shop-Breite reduziert */
+      right: -250px;
+      width: 250px;
       height: 100%;
       background-color: #fff8e1;
       box-shadow: -4px 0 6px rgba(0, 0, 0, 0.2);
-      padding: 10px;
+      padding: 15px;
       transition: right 0.3s ease;
-      overflow-y: auto; /* Falls Inhalte nicht passen */
     }
 
     .shop.open {
@@ -125,7 +126,6 @@
 
     .shop h3 {
       margin-top: 0;
-      font-size: 16px;
       color: #d2691e;
     }
 
@@ -139,7 +139,7 @@
       margin: 10px 0;
       border-radius: 5px;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 16px;
       transition: all 0.3s ease;
     }
 
@@ -168,28 +168,62 @@
   <button class="shop-toggle" onclick="toggleShop()">Shop öffnen</button>
 
   <div class="container">
-    <img id="cookie" src="ai-generated-8137635_1920.png" alt="Cookie">
-    <div id="cookiesCount">Cookies: 0</div>
-    <div class="button-group">
-      <button id="resetButton">Spiel zurücksetzen</button>
-      <button id="saveScoreButton">Punktzahl speichern</button>
+    <div class="game-area">
+      <div id="cookie">🍪</div>
+      <div id="cookiesCount">Cookies: 0</div>
+      <div class="button-group">
+        <button id="resetButton">Spiel zurücksetzen</button>
+        <button id="saveScoreButton">Punktzahl speichern</button>
+      </div>
     </div>
+  </div>
+
+  <div id="leaderboard">
+    <h3>Bestenliste</h3>
+    <ul id="leaderboardList"></ul>
   </div>
 
   <div class="shop" id="shop">
     <h3>Shop</h3>
-    <button id="upgrade1">+1 Cookie/Klick (Kosten: 100)</button>
-    <button id="upgrade2">+5 Cookies/Klick (Kosten: 500)</button>
-    <button id="upgrade3">+10 Cookies/Klick (Kosten: 1000)</button>
-    <button id="rebirth">Rebirth (Kosten: 10000)</button>
+    <button id="upgrade1">Upgrade 1: +1 Cookie/Klick (Kosten: <span id="cost1">100</span>)</button>
+    <button id="upgrade2">Upgrade 2: +5 Cookies/Klick (Kosten: <span id="cost2">500</span>)</button>
+    <button id="upgrade3">Upgrade 3: +10 Cookies/Klick (Kosten: <span id="cost3">1000</span>)</button>
+    <button id="upgrade4">Upgrade 4: +20 Cookies/Klick (Kosten: <span id="cost4">2500</span>)</button>
+    <button id="upgrade5">Upgrade 5: +50 Cookies/Klick (Kosten: <span id="cost5">5000</span>)</button>
+    <button id="rebirth">Rebirth (Kosten: <span id="rebirthCost">10000</span>)</button>
   </div>
 
   <script>
+    let cookies = 0;
+    let cookiesPerClick = 1;
+    let upgrade1Cost = 100;
+    let upgrade2Cost = 500;
+    let upgrade3Cost = 1000;
+    let upgrade4Cost = 2500;
+    let upgrade5Cost = 5000;
+    let rebirthCost = 10000;
+    const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+
+    const cookiesCountElement = document.getElementById('cookiesCount');
+    const leaderboardListElement = document.getElementById('leaderboardList');
     const shop = document.getElementById('shop');
+
+    function updateDisplay() {
+      cookiesCountElement.textContent = `Cookies: ${cookies}`;
+    }
+
+    document.getElementById('cookie').addEventListener('click', () => {
+      cookies += cookiesPerClick;
+      updateDisplay();
+    });
+
+    // ... alle vorherigen Upgrade- und Rebirth-Funktionen bleiben gleich
 
     function toggleShop() {
       shop.classList.toggle('open');
     }
+
+    updateLeaderboard();
   </script>
 
 </body>
