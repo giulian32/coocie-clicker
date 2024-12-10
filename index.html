@@ -12,10 +12,10 @@
       background: linear-gradient(135deg, #f5e0c3, #ffe4b5);
       color: #6a4f4b;
       box-sizing: border-box;
+      text-align: center;
     }
 
     h1 {
-      text-align: center;
       font-size: 48px;
       color: #d2691e;
       margin-top: 20px;
@@ -26,19 +26,16 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 80vh;
       flex-direction: column;
-    }
-
-    .game-area {
-      text-align: center;
-      margin-bottom: 20px;
+      margin-top: 20px;
+      padding: 10px;
     }
 
     #cookie {
       width: 250px;
       cursor: pointer;
       animation: float 2s infinite;
+      margin-bottom: 20px;
     }
 
     @keyframes float {
@@ -62,6 +59,7 @@
       flex-direction: column;
       align-items: center;
       gap: 15px;
+      max-width: 400px;
     }
 
     button {
@@ -75,6 +73,7 @@
       font-size: 18px;
       transition: all 0.3s ease;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      width: 100%;
     }
 
     button:hover {
@@ -85,12 +84,13 @@
     #leaderboard {
       margin-top: 40px;
       background-color: #fff8e1;
-      padding: 20px;
+      padding: 15px;
       border-radius: 10px;
       box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
       display: inline-block;
       text-align: left;
       width: 80%;
+      max-width: 500px;
     }
 
     #leaderboard h3 {
@@ -104,7 +104,7 @@
     }
 
     #leaderboard ul li {
-      font-size: 18px;
+      font-size: 16px;
       margin: 5px 0;
     }
 
@@ -332,4 +332,5 @@
 
 </body>
 </html>
+
 
