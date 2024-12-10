@@ -11,6 +11,7 @@
       padding: 0;
       background: linear-gradient(135deg, #f5e0c3, #ffe4b5);
       color: #6a4f4b;
+      box-sizing: border-box;
     }
 
     h1 {
@@ -31,6 +32,7 @@
 
     .game-area {
       text-align: center;
+      margin-bottom: 20px;
     }
 
     #cookie {
@@ -185,7 +187,10 @@
     <h3>Shop</h3>
     <button id="upgrade1">Upgrade 1: +1 Cookie/Klick (Kosten: <span id="cost1">100</span>)</button>
     <button id="upgrade2">Upgrade 2: +5 Cookies/Klick (Kosten: <span id="cost2">500</span>)</button>
-    <button id="rebirth">Rebirth (Kosten: <span id="rebirthCost">1000</span>)</button>
+    <button id="upgrade3">Upgrade 3: +10 Cookies/Klick (Kosten: <span id="cost3">1000</span>)</button>
+    <button id="upgrade4">Upgrade 4: +20 Cookies/Klick (Kosten: <span id="cost4">2500</span>)</button>
+    <button id="upgrade5">Upgrade 5: +50 Cookies/Klick (Kosten: <span id="cost5">5000</span>)</button>
+    <button id="rebirth">Rebirth (Kosten: <span id="rebirthCost">10000</span>)</button>
   </div>
 
   <script>
@@ -193,7 +198,10 @@
     let cookiesPerClick = 1;
     let upgrade1Cost = 100;
     let upgrade2Cost = 500;
-    let rebirthCost = 1000;
+    let upgrade3Cost = 1000;
+    let upgrade4Cost = 2500;
+    let upgrade5Cost = 5000;
+    let rebirthCost = 10000;
     const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
 
     const cookiesCountElement = document.getElementById('cookiesCount');
@@ -233,6 +241,42 @@
       }
     });
 
+    document.getElementById('upgrade3').addEventListener('click', () => {
+      if (cookies >= upgrade3Cost) {
+        cookies -= upgrade3Cost;
+        cookiesPerClick += 10;
+        upgrade3Cost = Math.floor(upgrade3Cost * 1.5);
+        document.getElementById('cost3').textContent = upgrade3Cost;
+        updateDisplay();
+      } else {
+        alert('Nicht genug Cookies!');
+      }
+    });
+
+    document.getElementById('upgrade4').addEventListener('click', () => {
+      if (cookies >= upgrade4Cost) {
+        cookies -= upgrade4Cost;
+        cookiesPerClick += 20;
+        upgrade4Cost = Math.floor(upgrade4Cost * 1.5);
+        document.getElementById('cost4').textContent = upgrade4Cost;
+        updateDisplay();
+      } else {
+        alert('Nicht genug Cookies!');
+      }
+    });
+
+    document.getElementById('upgrade5').addEventListener('click', () => {
+      if (cookies >= upgrade5Cost) {
+        cookies -= upgrade5Cost;
+        cookiesPerClick += 50;
+        upgrade5Cost = Math.floor(upgrade5Cost * 1.5);
+        document.getElementById('cost5').textContent = upgrade5Cost;
+        updateDisplay();
+      } else {
+        alert('Nicht genug Cookies!');
+      }
+    });
+
     document.getElementById('rebirth').addEventListener('click', () => {
       if (cookies >= rebirthCost) {
         cookies = 0;
@@ -250,7 +294,10 @@
       cookiesPerClick = 1;
       upgrade1Cost = 100;
       upgrade2Cost = 500;
-      rebirthCost = 1000;
+      upgrade3Cost = 1000;
+      upgrade4Cost = 2500;
+      upgrade5Cost = 5000;
+      rebirthCost = 10000;
       alert('Spiel zurückgesetzt!');
       updateDisplay();
     });
@@ -285,3 +332,4 @@
 
 </body>
 </html>
+
