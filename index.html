@@ -7,11 +7,18 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f9f9f9;
+      background: linear-gradient(to bottom, #ffcc99, #ff9966);
       margin: 0;
       padding: 0;
       text-align: center;
+      color: #333;
     }
+
+    h1 {
+      margin-top: 20px;
+      color: #fff;
+    }
+
     #cookie {
       margin: 20px auto;
       width: 200px;
@@ -20,41 +27,85 @@
       background-size: cover;
       background-position: center;
       cursor: pointer;
+      border-radius: 50%;
     }
+
     #score {
       font-size: 24px;
       margin: 20px;
+      color: #fff;
     }
+
+    #buttons {
+      margin-top: 20px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 15px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
     #shop {
       position: fixed;
       right: 0;
-      top: 50px;
+      top: 0;
       width: 250px;
       height: 100%;
-      background-color: #eee;
+      background-color: #fff;
       border-left: 2px solid #ccc;
       transform: translateX(100%);
       transition: transform 0.3s ease;
       overflow-y: auto;
+      padding: 10px;
     }
+
     #shop.open {
       transform: translateX(0);
     }
+
     #shop h3 {
-      margin-top: 10px;
       font-size: 20px;
+      margin-bottom: 10px;
     }
+
     .upgrade {
-      margin: 10px;
+      margin: 10px 0;
       padding: 10px;
-      background-color: #fff;
+      background-color: #f9f9f9;
       border: 1px solid #ccc;
       border-radius: 5px;
       cursor: pointer;
     }
+
     .upgrade:hover {
       background-color: #f0f0f0;
     }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      margin: 5px 0;
+      font-size: 16px;
+    }
+
+    #leaderboard-container {
+      margin: 20px auto;
+      max-width: 600px;
+    }
+
     #toggleShop {
       position: fixed;
       right: 10px;
@@ -66,23 +117,23 @@
       padding: 10px;
       cursor: pointer;
     }
+
     #toggleShop:hover {
       background-color: #0056b3;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    li {
-      margin: 5px 0;
-      font-size: 16px;
     }
   </style>
 </head>
 <body>
-  <button id="toggleShop">Shop öffnen</button>
+  <h1>Cookie Clicker</h1>
   <div id="cookie"></div>
   <div id="score">Cookies: <span id="cookies">0</span></div>
+
+  <div id="buttons">
+    <button id="reset">Zurücksetzen</button>
+  </div>
+
+  <button id="toggleShop">Shop öffnen</button>
+
   <div id="shop">
     <h3>Shop</h3>
     <div class="upgrade" id="upgrade1">Upgrade 1: <span id="cost1">100</span> Cookies</div>
@@ -90,99 +141,58 @@
     <div class="upgrade" id="upgrade3">Upgrade 3: <span id="cost3">1000</span> Cookies</div>
     <div class="upgrade" id="upgrade4">Upgrade 4: <span id="cost4">2500</span> Cookies</div>
     <div class="upgrade" id="upgrade5">Upgrade 5: <span id="cost5">5000</span> Cookies</div>
-    <div class="upgrade" id="rebirth">Rebirth: <span id="rebirthCost">10000</span> Cookies</div>
   </div>
-  <ul id="leaderboard"></ul>
+
+  <div id="leaderboard-container">
+    <h3>Bestenliste</h3>
+    <ul id="leaderboard"></ul>
+  </div>
 
   <script>
     let cookies = 0;
     let cookiesPerClick = 1;
     let upgrade1Cost = 100, upgrade2Cost = 500, upgrade3Cost = 1000, upgrade4Cost = 2500, upgrade5Cost = 5000;
-    let rebirthCost = 10000;
 
     const cookieElement = document.getElementById('cookie');
     const cookiesElement = document.getElementById('cookies');
+    const resetButton = document.getElementById('reset');
     const shop = document.getElementById('shop');
-    const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
-    const leaderboardListElement = document.getElementById('leaderboard');
+    const toggleShopButton = document.getElementById('toggleShop');
+    const leaderboardElement = document.getElementById('leaderboard');
+    let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
 
     cookieElement.addEventListener('click', () => {
       cookies += cookiesPerClick;
       cookiesElement.textContent = cookies;
     });
 
-    document.getElementById('upgrade1').addEventListener('click', () => {
-      if (cookies >= upgrade1Cost) {
-        cookies -= upgrade1Cost;
-        cookiesPerClick += 1;
-        upgrade1Cost = Math.floor(upgrade1Cost * 1.5);
-        document.getElementById('cost1').textContent = upgrade1Cost;
-      } else {
-        alert('Nicht genug Cookies!');
+    resetButton.addEventListener('click', () => {
+      const name = prompt('Gib deinen Namen für die Bestenliste ein:');
+      if (name) {
+        leaderboard.push({ name, score: cookies });
+        leaderboard.sort((a, b) => b.score - a.score);
+        localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+        updateLeaderboard();
       }
+      cookies = 0;
+      cookiesPerClick = 1;
+      cookiesElement.textContent = cookies;
     });
 
-    document.getElementById('upgrade2').addEventListener('click', () => {
-      if (cookies >= upgrade2Cost) {
-        cookies -= upgrade2Cost;
-        cookiesPerClick += 5;
-        upgrade2Cost = Math.floor(upgrade2Cost * 1.5);
-        document.getElementById('cost2').textContent = upgrade2Cost;
-      } else {
-        alert('Nicht genug Cookies!');
-      }
-    });
-
-    document.getElementById('upgrade3').addEventListener('click', () => {
-      if (cookies >= upgrade3Cost) {
-        cookies -= upgrade3Cost;
-        cookiesPerClick += 10;
-        upgrade3Cost = Math.floor(upgrade3Cost * 1.5);
-        document.getElementById('cost3').textContent = upgrade3Cost;
-      } else {
-        alert('Nicht genug Cookies!');
-      }
-    });
-
-    document.getElementById('upgrade4').addEventListener('click', () => {
-      if (cookies >= upgrade4Cost) {
-        cookies -= upgrade4Cost;
-        cookiesPerClick += 25;
-        upgrade4Cost = Math.floor(upgrade4Cost * 1.5);
-        document.getElementById('cost4').textContent = upgrade4Cost;
-      } else {
-        alert('Nicht genug Cookies!');
-      }
-    });
-
-    document.getElementById('upgrade5').addEventListener('click', () => {
-      if (cookies >= upgrade5Cost) {
-        cookies -= upgrade5Cost;
-        cookiesPerClick += 50;
-        upgrade5Cost = Math.floor(upgrade5Cost * 1.5);
-        document.getElementById('cost5').textContent = upgrade5Cost;
-      } else {
-        alert('Nicht genug Cookies!');
-      }
-    });
-
-    document.getElementById('rebirth').addEventListener('click', () => {
-      if (cookies >= rebirthCost) {
-        cookies = 0;
-        cookiesPerClick += 2;
-        rebirthCost = Math.floor(rebirthCost * 2);
-        document.getElementById('rebirthCost').textContent = rebirthCost;
-        alert('Rebirth erfolgreich!');
-      } else {
-        alert('Nicht genug Cookies für Rebirth!');
-      }
-    });
-
-    function toggleShop() {
+    toggleShopButton.addEventListener('click', () => {
       shop.classList.toggle('open');
+    });
+
+    function updateLeaderboard() {
+      leaderboardElement.innerHTML = '';
+      leaderboard.forEach(entry => {
+        const li = document.createElement('li');
+        li.textContent = `${entry.name}: ${entry.score}`;
+        leaderboardElement.appendChild(li);
+      });
     }
 
-    document.getElementById('toggleShop').addEventListener('click', toggleShop);
+    updateLeaderboard();
   </script>
 </body>
 </html>
