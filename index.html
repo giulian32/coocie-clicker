@@ -13,11 +13,42 @@
       background: linear-gradient(135deg, #f5e0c3, #ffe4b5);
     }
 
+    #startScreen, #gameScreen {
+      display: none;
+    }
+
+    #startScreen {
+      display: block;
+      padding: 50px;
+    }
+
+    #gameScreen {
+      padding: 20px;
+    }
+
     h1 {
       font-size: 48px;
       color: #d2691e;
       margin: 20px 0;
       text-shadow: 2px 2px #fff;
+    }
+
+    button {
+      background-color: #ff8c00;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      margin: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    button:hover {
+      background-color: #e07800;
+      transform: translateY(-3px);
     }
 
     #cookie {
@@ -51,38 +82,30 @@
       justify-content: center;
       gap: 15px;
     }
-
-    button {
-      background-color: #ff8c00;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      margin: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 18px;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    }
-
-    button:hover {
-      background-color: #e07800;
-      transform: translateY(-3px);
-    }
   </style>
 </head>
 <body>
 
-  <h1>Cookie Clicker Deluxe</h1>
-  <div id="cookie">🍪</div>
+  <!-- Startbildschirm -->
+  <div id="startScreen">
+    <h1>Willkommen bei Cookie Clicker Deluxe!</h1>
+    <p>Erklicke dir deinen Weg zur Spitze! Baue deine Cookies auf, kaufe Upgrades und dominiere das Spiel!</p>
+    <button onclick="startGame()">Spiel Starten</button>
+  </div>
 
-  <div id="cookiesCount">Cookies: 0</div>
+  <!-- Spielbildschirm -->
+  <div id="gameScreen">
+    <h1>Cookie Clicker Deluxe</h1>
+    <div id="cookie">🍪</div>
 
-  <div class="button-group">
-    <button id="shopButton1">Upgrade: +1 Cookie/Klick (Kosten: <span id="cost1">100</span>)</button>
-    <button id="shopButton2">Upgrade: +5 Cookies/Klick (Kosten: <span id="cost2">500</span>)</button>
-    <button id="rebirthButton">Rebirth (Setzt Cookies zurück, erhöht Klickwert) (Kosten: 1000)</button>
-    <button id="resetButton">Spiel Zurücksetzen</button>
+    <div id="cookiesCount">Cookies: 0</div>
+
+    <div class="button-group">
+      <button id="shopButton1">Upgrade: +1 Cookie/Klick (Kosten: <span id="cost1">100</span>)</button>
+      <button id="shopButton2">Upgrade: +5 Cookies/Klick (Kosten: <span id="cost2">500</span>)</button>
+      <button id="rebirthButton">Rebirth (Setzt Cookies zurück, erhöht Klickwert) (Kosten: 1000)</button>
+      <button id="resetButton">Spiel Zurücksetzen</button>
+    </div>
   </div>
 
   <script>
@@ -96,10 +119,18 @@
     let rebirthCost = 1000;
 
     // HTML-Elemente
+    const startScreen = document.getElementById('startScreen');
+    const gameScreen = document.getElementById('gameScreen');
     const cookieElement = document.getElementById('cookie');
     const cookiesCountElement = document.getElementById('cookiesCount');
     const cost1Element = document.getElementById('cost1');
     const cost2Element = document.getElementById('cost2');
+
+    // Spiel starten
+    function startGame() {
+      startScreen.style.display = 'none';
+      gameScreen.style.display = 'block';
+    }
 
     // Cookie-Klick
     cookieElement.addEventListener('click', () => {
@@ -165,4 +196,5 @@
 
 </body>
 </html>
+
 
