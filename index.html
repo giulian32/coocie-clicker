@@ -13,42 +13,11 @@
       background: linear-gradient(135deg, #f5e0c3, #ffe4b5);
     }
 
-    #startScreen, #gameScreen {
-      display: none;
-    }
-
-    #startScreen {
-      display: block;
-      padding: 50px;
-    }
-
-    #gameScreen {
-      padding: 20px;
-    }
-
     h1 {
       font-size: 48px;
       color: #d2691e;
       margin: 20px 0;
       text-shadow: 2px 2px #fff;
-    }
-
-    button {
-      background-color: #ff8c00;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      margin: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 18px;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    }
-
-    button:hover {
-      background-color: #e07800;
-      transform: translateY(-3px);
     }
 
     #cookie {
@@ -82,30 +51,66 @@
       justify-content: center;
       gap: 15px;
     }
+
+    button {
+      background-color: #ff8c00;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      margin: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    button:hover {
+      background-color: #e07800;
+      transform: translateY(-3px);
+    }
+
+    #leaderboard {
+      margin-top: 40px;
+      background-color: #fff8e1;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      display: inline-block;
+      text-align: left;
+    }
+
+    #leaderboard h3 {
+      color: #d2691e;
+      margin-bottom: 10px;
+    }
+
+    #leaderboard ul {
+      padding: 0;
+      list-style: none;
+    }
+
+    #leaderboard ul li {
+      margin: 5px 0;
+      font-size: 18px;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Startbildschirm -->
-  <div id="startScreen">
-    <h1>Willkommen bei Cookie Clicker Deluxe!</h1>
-    <p>Erklicke dir deinen Weg zur Spitze! Baue deine Cookies auf, kaufe Upgrades und dominiere das Spiel!</p>
-    <button onclick="startGame()">Spiel Starten</button>
+  <h1>Cookie Clicker Deluxe</h1>
+  <div id="cookie">🍪</div>
+
+  <div id="cookiesCount">Cookies: 0</div>
+
+  <div class="button-group">
+    <button id="saveScoreButton">Punktzahl speichern</button>
+    <button id="resetButton">Spiel Zurücksetzen</button>
   </div>
 
-  <!-- Spielbildschirm -->
-  <div id="gameScreen">
-    <h1>Cookie Clicker Deluxe</h1>
-    <div id="cookie">🍪</div>
-
-    <div id="cookiesCount">Cookies: 0</div>
-
-    <div class="button-group">
-      <button id="shopButton1">Upgrade: +1 Cookie/Klick (Kosten: <span id="cost1">100</span>)</button>
-      <button id="shopButton2">Upgrade: +5 Cookies/Klick (Kosten: <span id="cost2">500</span>)</button>
-      <button id="rebirthButton">Rebirth (Setzt Cookies zurück, erhöht Klickwert) (Kosten: 1000)</button>
-      <button id="resetButton">Spiel Zurücksetzen</button>
-    </div>
+  <div id="leaderboard">
+    <h3>Bestenliste</h3>
+    <ul id="leaderboardList"></ul>
   </div>
 
   <script>
@@ -113,24 +118,13 @@
     let cookies = 0;
     let cookiesPerClick = 1;
 
-    // Preise
-    let upgrade1Cost = 100;
-    let upgrade2Cost = 500;
-    let rebirthCost = 1000;
-
     // HTML-Elemente
-    const startScreen = document.getElementById('startScreen');
-    const gameScreen = document.getElementById('gameScreen');
     const cookieElement = document.getElementById('cookie');
     const cookiesCountElement = document.getElementById('cookiesCount');
-    const cost1Element = document.getElementById('cost1');
-    const cost2Element = document.getElementById('cost2');
+    const leaderboardListElement = document.getElementById('leaderboardList');
 
-    // Spiel starten
-    function startGame() {
-      startScreen.style.display = 'none';
-      gameScreen.style.display = 'block';
-    }
+    // Bestehende Bestenliste laden
+    const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
 
     // Cookie-Klick
     cookieElement.addEventListener('click', () => {
@@ -138,60 +132,44 @@
       updateDisplay();
     });
 
-    // Upgrade 1
-    document.getElementById('shopButton1').addEventListener('click', () => {
-      if (cookies >= upgrade1Cost) {
-        cookies -= upgrade1Cost;
-        cookiesPerClick += 1;
-        upgrade1Cost = Math.floor(upgrade1Cost * 1.5);
-        cost1Element.textContent = upgrade1Cost;
-        updateDisplay();
-      } else {
-        alert('Nicht genug Cookies!');
+    // Punktzahl speichern
+    document.getElementById('saveScoreButton').addEventListener('click', () => {
+      const playerName = prompt('Bitte gib deinen Namen ein:');
+      if (playerName) {
+        leaderboard.push({ name: playerName, score: cookies });
+        leaderboard.sort((a, b) => b.score - a.score);
+        leaderboard.splice(10); // Nur die Top 10 speichern
+        localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+        updateLeaderboard();
+        alert('Punktzahl gespeichert!');
       }
     });
 
-    // Upgrade 2
-    document.getElementById('shopButton2').addEventListener('click', () => {
-      if (cookies >= upgrade2Cost) {
-        cookies -= upgrade2Cost;
-        cookiesPerClick += 5;
-        upgrade2Cost = Math.floor(upgrade2Cost * 1.5);
-        cost2Element.textContent = upgrade2Cost;
-        updateDisplay();
-      } else {
-        alert('Nicht genug Cookies!');
-      }
-    });
-
-    // Rebirth
-    document.getElementById('rebirthButton').addEventListener('click', () => {
-      if (cookies >= rebirthCost) {
-        cookies = 0;
-        cookiesPerClick += 2;
-        rebirthCost = Math.floor(rebirthCost * 2);
-        alert('Rebirth erfolgreich! Cookies pro Klick erhöht.');
-        updateDisplay();
-      } else {
-        alert('Du brauchst mehr Cookies für einen Rebirth!');
-      }
-    });
-
-    // Zurücksetzen
+    // Spiel zurücksetzen
     document.getElementById('resetButton').addEventListener('click', () => {
       cookies = 0;
       cookiesPerClick = 1;
-      upgrade1Cost = 100;
-      upgrade2Cost = 500;
-      rebirthCost = 1000;
       alert('Spiel zurückgesetzt!');
       updateDisplay();
     });
+
+    // Bestenliste aktualisieren
+    function updateLeaderboard() {
+      leaderboardListElement.innerHTML = '';
+      leaderboard.forEach((entry, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${index + 1}. ${entry.name} - ${entry.score} Cookies`;
+        leaderboardListElement.appendChild(li);
+      });
+    }
 
     // Anzeige aktualisieren
     function updateDisplay() {
       cookiesCountElement.textContent = `Cookies: ${cookies}`;
     }
+
+    // Bestenliste initial anzeigen
+    updateLeaderboard();
   </script>
 
 </body>
