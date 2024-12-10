@@ -104,8 +104,11 @@
   <div id="cookiesCount">Cookies: 0</div>
 
   <div class="button-group">
-    <button id="saveScoreButton">Punktzahl speichern</button>
+    <button id="shopButton1">Upgrade: +1 Cookie/Klick (Kosten: <span id="cost1">100</span>)</button>
+    <button id="shopButton2">Upgrade: +5 Cookies/Klick (Kosten: <span id="cost2">500</span>)</button>
+    <button id="rebirthButton">Rebirth (Kosten: <span id="rebirthCost">1000</span>)</button>
     <button id="resetButton">Spiel Zurücksetzen</button>
+    <button id="saveScoreButton">Punktzahl speichern</button>
   </div>
 
   <div id="leaderboard">
@@ -117,19 +120,69 @@
     // Globale Variablen
     let cookies = 0;
     let cookiesPerClick = 1;
+    let rebirthCost = 1000;
+    let rebirthBonus = 2;
+
+    // Preise
+    let upgrade1Cost = 100;
+    let upgrade2Cost = 500;
+
+    // Bestenliste
+    const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
 
     // HTML-Elemente
     const cookieElement = document.getElementById('cookie');
     const cookiesCountElement = document.getElementById('cookiesCount');
     const leaderboardListElement = document.getElementById('leaderboardList');
-
-    // Bestehende Bestenliste laden
-    const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+    const cost1Element = document.getElementById('cost1');
+    const cost2Element = document.getElementById('cost2');
+    const rebirthCostElement = document.getElementById('rebirthCost');
 
     // Cookie-Klick
     cookieElement.addEventListener('click', () => {
       cookies += cookiesPerClick;
       updateDisplay();
+    });
+
+    // Upgrade 1
+    document.getElementById('shopButton1').addEventListener('click', () => {
+      if (cookies >= upgrade1Cost) {
+        cookies -= upgrade1Cost;
+        cookiesPerClick += 1;
+        upgrade1Cost = Math.floor(upgrade1Cost * 1.5);
+        cost1Element.textContent = upgrade1Cost;
+        updateDisplay();
+      } else {
+        alert('Nicht genug Cookies!');
+      }
+    });
+
+    // Upgrade 2
+    document.getElementById('shopButton2').addEventListener('click', () => {
+      if (cookies >= upgrade2Cost) {
+        cookies -= upgrade2Cost;
+        cookiesPerClick += 5;
+        upgrade2Cost = Math.floor(upgrade2Cost * 1.5);
+        cost2Element.textContent = upgrade2Cost;
+        updateDisplay();
+      } else {
+        alert('Nicht genug Cookies!');
+      }
+    });
+
+    // Rebirth
+    document.getElementById('rebirthButton').addEventListener('click', () => {
+      if (cookies >= rebirthCost) {
+        cookies = 0;
+        cookiesPerClick += rebirthBonus;
+        rebirthCost = Math.floor(rebirthCost * 2);
+        rebirthBonus += 1;
+        rebirthCostElement.textContent = rebirthCost;
+        alert('Rebirth erfolgreich! Cookies pro Klick erhöht.');
+        updateDisplay();
+      } else {
+        alert('Du brauchst mehr Cookies für einen Rebirth!');
+      }
     });
 
     // Punktzahl speichern
@@ -149,6 +202,10 @@
     document.getElementById('resetButton').addEventListener('click', () => {
       cookies = 0;
       cookiesPerClick = 1;
+      upgrade1Cost = 100;
+      upgrade2Cost = 500;
+      rebirthCost = 1000;
+      rebirthBonus = 2;
       alert('Spiel zurückgesetzt!');
       updateDisplay();
     });
@@ -174,5 +231,6 @@
 
 </body>
 </html>
+
 
 
